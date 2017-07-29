@@ -18,7 +18,7 @@ the License.
 
   global.ArcBehaviors = global.ArcBehaviors || {};
   /**
-   * A behavior to be implemented to elements that need to parse
+   * A behavior to be implemented to elements that needs to parse
    * request / response body.
    * It contains functions to encode / decode form data and to escape HTML.
    *
@@ -70,25 +70,25 @@ the License.
     /**
      * Escape HTML to save HTML text.
      *
-     * @param {String} s A HTML string to be escaped.
+     * @param {String} html A HTML string to be escaped.
      */
-    htmlEscape: function(s) {
-      if (s.indexOf('&') !== -1) {
-        s = s.replace(this.AMP_RE, '&amp;');
+    htmlEscape: function(html) {
+      if (html.indexOf('&') !== -1) {
+        html = html.replace(this.AMP_RE, '&amp;');
       }
-      if (s.indexOf('<') !== -1) {
-        s = s.replace(this.LT_RE, '&lt;');
+      if (html.indexOf('<') !== -1) {
+        html = html.replace(this.LT_RE, '&lt;');
       }
-      if (s.indexOf('>') !== -1) {
-        s = s.replace(this.GT_RE, '&gt;');
+      if (html.indexOf('>') !== -1) {
+        html = html.replace(this.GT_RE, '&gt;');
       }
-      if (s.indexOf('"') !== -1) {
-        s = s.replace(this.QUOT_RE, '&quot;');
+      if (html.indexOf('"') !== -1) {
+        html = html.replace(this.QUOT_RE, '&quot;');
       }
-      if (s.indexOf('\'') !== -1) {
-        s = s.replace(this.SQUOT_RE, '&#39;');
+      if (html.indexOf('\'') !== -1) {
+        html = html.replace(this.SQUOT_RE, '&apos;');
       }
-      return s;
+      return html;
     },
 
     /**
@@ -107,18 +107,26 @@ the License.
       if (!arr) {
         return result;
       }
-      arr.forEach(function(item) {
-        var name = this._paramValue(item.name);
-        var value = this._paramValue(item.value);
-        if (!name && !value) {
-          return;
-        }
-        if (result) {
-          result += '&';
-        }
-        result += name + '=' + value;
-      }, this);
+      result = arr.map(function(item) {
+        return this._modelItemToFormDataString(item);
+      }, this).join('&');
       return result;
+    },
+    /**
+     * Creates a form data string for a single item.
+     * @param {Object} model The model with `name` and `value` properties.
+     * @return {String} Generated value string for x-www-form-urlencoded form.
+     */
+    _modelItemToFormDataString: function(model) {
+      var name = this._paramValue(model.name);
+      var value = model.value;
+      if (value && value instanceof Array) {
+        return value.map(function(item) {
+          return name + '=' + this._paramValue(item);
+        }, this).join('&');
+      }
+      value = this._paramValue(value);
+      return name + '=' + value;
     },
 
     /**
@@ -166,10 +174,7 @@ the License.
         var ch = input[i++];
         if (ch === undefined) {
           if (_tmpValue || _tmpName) {
-            result[result.length] = {
-              name: _tmpName,
-              value: _tmpValue
-            };
+            result = this._appendArrayResult(result, _tmpName, _tmpValue);
           }
           break;
         }
@@ -181,10 +186,7 @@ the License.
         }
         if (ch === '&') {
           state = 0;
-          result[result.length] = {
-            name: _tmpName,
-            value: _tmpValue
-          };
+          result = this._appendArrayResult(result, _tmpName, _tmpValue);
           _tmpName = '';
           _tmpValue = '';
           continue;
@@ -197,6 +199,33 @@ the License.
       }
       return result;
     },
+    /**
+     * Appends form data parameter to an array.
+     * If the parameter already exists in the array it creates an array for
+     * the value onstead of appending the same parameter.
+     *
+     * @param {Array} array An array to append the parameter
+     * @param {String} name Name of the form data parameter
+     * @param {String} value Value of the form data parameter
+     * @return {Array} Updated array
+     */
+    _appendArrayResult: function(array, name, value) {
+      for (var i = 0, len = array.length; i < len; i++) {
+        if (array[i].name === name) {
+          if (array[i].value instanceof Array) {
+            array[i].value.push(value);
+          } else {
+            array[i].value = [array[i].value, value];
+          }
+          return array;
+        }
+      }
+      array.push({
+        name: name,
+        value: value
+      });
+      return array;
+    },
 
     /**
      * Encode payload to x-www-form-urlencoded string.
@@ -207,21 +236,35 @@ the License.
       if (!input || !input.length) {
         return input;
       }
-      var isArray = true;
-      if (!(input instanceof Array)) {
-        isArray = false;
+      var isArray = input instanceof Array;
+      if (!isArray) {
         input = this.stringToArray(input);
       }
       input.forEach(function(obj) {
         obj.name = this.encodeQueryString(obj.name);
-        obj.value = this.encodeQueryString(obj.value);
+        obj.value = this._encodeValue(obj.value);
       }, this);
       if (isArray) {
         return input;
       }
       return this.formArrayToString(input);
     },
-
+    /**
+     * URL encodes a value.
+     *
+     * @param {String|Array<String>} value Value to encode. Either string or
+     * array of strings.
+     * @return {String|Array<String>} Encoded value. The same type as the input.
+     */
+    _encodeValue: function(value) {
+      if (value instanceof Array) {
+        for (var i = 0, len = value.length; i < len; i++) {
+          value[i] = this.encodeQueryString(value[i]);
+        }
+        return value;
+      }
+      return this.encodeQueryString(value);
+    },
     /**
      * Decode x-www-form-urlencoded data.
      *
@@ -231,19 +274,34 @@ the License.
       if (!input || !input.length) {
         return input;
       }
-      var isArray = true;
-      if (!(input instanceof Array)) {
-        isArray = false;
+      var isArray = input instanceof Array;
+      if (!isArray) {
         input = this.stringToArray(input);
       }
       input.forEach(function(obj) {
         obj.name = this.decodeQueryString(obj.name);
-        obj.value = this.decodeQueryString(obj.value);
+        obj.value = this._decodeValue(obj.value);
       }, this);
       if (isArray) {
         return input;
       }
       return this.formArrayToString(input);
+    },
+    /**
+     * URL decodes a value.
+     *
+     * @param {String|Array<String>} value Value to decode. Either string or
+     * array of strings.
+     * @return {String|Array<String>} Decoded value. The same type as the input.
+     */
+    _decodeValue: function(value) {
+      if (value instanceof Array) {
+        for (var i = 0, len = value.length; i < len; i++) {
+          value[i] = this.decodeQueryString(value[i]);
+        }
+        return value;
+      }
+      return this.decodeQueryString(value);
     },
 
     /**

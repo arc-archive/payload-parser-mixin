@@ -1,13 +1,10 @@
 {
   "name": "payload-parser-behavior",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "license": "Apache-2.0 OR CC-BY-4.0",
   "description": "Headers parser behavior to be impplemented with elements that needs to parse headers data",
   "devDependencies": {
-    "polymer-cli": "^0.16.0"
-  },
-  "engines": {
-    "node": ">=0.10.0"
+    "polymer-cli": "^1.2.0"
   },
   "private": false,
   "main": [
@@ -15,9 +12,9 @@
   ],
   "author": "jarrod",
   "scripts": {
-    "lint": "node_modules/.bin/polymer lint payload-parser-behavior.html",
+    "lint": "node_modules/.bin/polymer lint payload-parser-behavior.html --rules polymer-1",
     "test-sauce": "node_modules/.bin/polymer test --plugin sauce --job-name \"payload-parser-behavior:local-test\"",
-    "test": "node_modules/.bin/polymer test",
+    "test": "node_modules/.bin/polymer test --plugin local",
     "deps": "npm install --quiet && bower install --quiet",
     "update-deps": "npm update --quiet && bower update --quiet"
   },
