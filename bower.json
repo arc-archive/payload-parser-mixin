@@ -2,7 +2,7 @@
   "name": "payload-parser-behavior",
   "license": "Apache-2.0 OR CC-BY-4.0",
   "description": "Payload parser behavior to be impplemented with elements that needs to parse response body",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "authors": [
     "The Advanced REST client authors <arc@mulesoft.com>"
   ],
