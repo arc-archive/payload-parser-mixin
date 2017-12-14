@@ -49,6 +49,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(str, compare);
       });
 
+      test('Empty model returns empty string', function() {
+        var list = [{
+          'name': '',
+          'value': ''
+        }];
+        var str = element.formArrayToString(list);
+        assert.equal(str, '');
+      });
+
       test('Should create www-urlencoded string from array', function() {
         var list = [{
           'name': 'test',

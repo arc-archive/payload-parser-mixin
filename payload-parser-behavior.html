@@ -109,7 +109,11 @@ the License.
       }
       result = arr.map(function(item) {
         return this._modelItemToFormDataString(item);
-      }, this).join('&');
+      }, this)
+      .filter(function(item) {
+        return !!item;
+      })
+      .join('&');
       return result;
     },
     /**
@@ -126,6 +130,9 @@ the License.
         }, this).join('&');
       }
       value = this._paramValue(value);
+      if (!name && !value) {
+        return;
+      }
       return name + '=' + value;
     },
 
