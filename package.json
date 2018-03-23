@@ -1,6 +1,6 @@
 {
   "name": "payload-parser-behavior",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "license": "Apache-2.0 OR CC-BY-4.0",
   "description": "Headers parser behavior to be impplemented with elements that needs to parse headers data",
   "devDependencies": {
