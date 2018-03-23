@@ -1,23 +1,10 @@
 <!doctype html>
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
-    <script src="../../iron-test-helpers/test-helpers.js"></script>
-    <script src="../../iron-test-helpers/mock-interactions.js"></script>
-
     <link rel="import" href="test-element.html">
   </head>
   <body>
@@ -29,62 +16,61 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
     <script>
-    /* global fixture, assert */
-    suite('URL decoder', function() {
-      var element;
-      setup(function() {
+    suite('URL decoder', () => {
+      let element;
+      setup(() => {
         element = fixture('basic');
       });
 
-      test('Decode encoded string', function() {
-        var compare = 'test=encoded value&encoded name=encoded value';
-        var src = 'test=encoded+value&encoded+name=encoded+value';
-        var result = element.decodeUrlEncoded(src);
+      test('Decode encoded string', () => {
+        const compare = 'test=encoded value&encoded name=encoded value';
+        const src = 'test=encoded+value&encoded+name=encoded+value';
+        const result = element.decodeUrlEncoded(src);
         assert.equal(result, compare);
       });
 
-      test('Decode encoded string with repeatable parameters', function() {
-        var compare = 'test=encoded value&test=other value&encoded name=encoded value';
-        var src = 'test=encoded+value&encoded+name=encoded+value&test=other+value';
-        var result = element.decodeUrlEncoded(src);
+      test('Decode encoded string with repeatable parameters', () => {
+        const compare = 'test=encoded value&test=other value&encoded name=encoded value';
+        const src = 'test=encoded+value&encoded+name=encoded+value&test=other+value';
+        const result = element.decodeUrlEncoded(src);
         assert.equal(result, compare);
       });
 
-      test('Decodes encoded array', function() {
-        var compare = [{
+      test('Decodes encoded array', () => {
+        const compare = [{
           'name': 'test',
           'value': 'encoded value'
         }, {
           'name': 'encoded name',
           'value': 'encoded value'
         }];
-        var input = [{
+        const input = [{
           'name': 'test',
           'value': 'encoded+value'
         }, {
           'name': 'encoded+name',
           'value': 'encoded+value'
         }];
-        var result = element.decodeUrlEncoded(input);
+        const result = element.decodeUrlEncoded(input);
         assert.deepEqual(result, compare);
       });
 
-      test('Decodes encoded array with array value', function() {
-        var compare = [{
+      test('Decodes encoded array with array value', () => {
+        const compare = [{
           'name': 'test',
           'value': 'encoded value'
         }, {
           'name': 'encoded name',
           'value': ['encoded value', 'other value']
         }];
-        var src = [{
+        const src = [{
           'name': 'test',
           'value': 'encoded+value'
         }, {
           'name': 'encoded+name',
           'value': ['encoded+value', 'other+value']
         }];
-        var str = element.decodeUrlEncoded(src);
+        const str = element.decodeUrlEncoded(src);
         assert.deepEqual(str, compare);
       });
     });

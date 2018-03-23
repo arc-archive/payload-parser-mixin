@@ -1,23 +1,10 @@
 <!doctype html>
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
-    <script src="../../iron-test-helpers/test-helpers.js"></script>
-    <script src="../../iron-test-helpers/mock-interactions.js"></script>
-
     <link rel="import" href="test-element.html">
   </head>
   <body>
@@ -30,69 +17,69 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script>
     /* global fixture, assert */
-    suite('URL encoder', function() {
-      var element;
-      setup(function() {
+    suite('URL encoder', () => {
+      let element;
+      setup(() => {
         element = fixture('basic');
       });
 
-      test('Encodes string', function() {
-        var src = 'test=encoded value&encoded name=encoded value';
-        var compare = 'test=encoded+value&encoded+name=encoded+value';
-        var result = element.encodeUrlEncoded(src);
+      test('Encodes string', () => {
+        const src = 'test=encoded value&encoded name=encoded value';
+        const compare = 'test=encoded+value&encoded+name=encoded+value';
+        const result = element.encodeUrlEncoded(src);
         assert.equal(result, compare);
       });
 
-      test('Encodes string with repeatable parameters', function() {
-        var src = 'test=encoded value&test=other value&encoded name=encoded value';
-        var compare = 'test=encoded+value&test=other+value&encoded+name=encoded+value';
-        var result = element.encodeUrlEncoded(src);
+      test('Encodes string with repeatable parameters', () => {
+        const src = 'test=encoded value&test=other value&encoded name=encoded value';
+        const compare = 'test=encoded+value&test=other+value&encoded+name=encoded+value';
+        const result = element.encodeUrlEncoded(src);
         assert.equal(result, compare);
       });
 
-      test('Encodes array', function() {
-        var src = [{
+      test('Encodes array', () => {
+        const src = [{
           'name': 'test',
           'value': 'encoded value'
         }, {
           'name': 'encoded name',
           'value': 'encoded value'
         }];
-        var compare = [{
+        const compare = [{
           'name': 'test',
           'value': 'encoded+value'
         }, {
           'name': 'encoded+name',
           'value': 'encoded+value'
         }];
-        var str = element.encodeUrlEncoded(src);
+        const str = element.encodeUrlEncoded(src);
         assert.deepEqual(str, compare);
       });
 
-      test('Encodes array with array value', function() {
-        var src = [{
+      test('Encodes array with array value', () => {
+        const src = [{
           'name': 'test',
           'value': ['encoded value', 'other value']
         }, {
           'name': 'encoded name',
           'value': 'encoded value'
         }];
-        var compare = [{
+        const compare = [{
           'name': 'test',
           'value': ['encoded+value', 'other+value']
         }, {
           'name': 'encoded+name',
           'value': 'encoded+value'
         }];
-        var result = element.encodeUrlEncoded(src);
+        const result = element.encodeUrlEncoded(src);
         assert.deepEqual(result, compare);
       });
 
-      test('Should encode query string', function() {
-        var query = '/test path/?param name=param value';
-        var encoded = element.encodeQueryString(query);
+      test('Should encode query string', () => {
+        const query = '/test path/?param name=param value';
+        const encoded = element.encodeQueryString(query);
         // path will be encoded, this function encodes query params only.
-        var compare = '%2Ftest+path%2F%3Fparam+name%3Dparam+value';
+        const compare = '%2Ftest+path%2F%3Fparam+name%3Dparam+value';
         assert.equal(encoded, compare);
       });
     });
