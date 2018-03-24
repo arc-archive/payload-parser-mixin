@@ -136,6 +136,9 @@ ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
      * @return {String} Generated value string for x-www-form-urlencoded form.
      */
     _modelItemToFormDataString(model) {
+      if (model.schema && model.schema.enabled === false) {
+        return;
+      }
       const name = this._paramValue(model.name);
       let value = model.value;
       if (value && value instanceof Array) {
