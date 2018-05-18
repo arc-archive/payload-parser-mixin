@@ -1,6 +1,6 @@
 <!--
 @license
-Copyright 2016 The Advanced REST client authors <arc@mulesoft.com>
+Copyright 2018 The Advanced REST client authors <arc@mulesoft.com>
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
 use this file except in compliance with the License. You may obtain a copy of
@@ -12,67 +12,83 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
+<link rel="import" href="../polymer/lib/utils/mixin.html">
 <script>
 (function(global) {
-  'use strict';
+'use strict';
 
-  global.ArcBehaviors = global.ArcBehaviors || {};
+if (!global.ArcBehaviors) {
   /**
-   * A behavior to be implemented to elements that needs to parse
-   * request / response body.
-   * It contains functions to encode / decode form data and to escape HTML.
-   *
-   * @polymerBehavior ArcBehaviors.PayloadParserBehavior
+   * @namespace ArcBehaviors
    */
-  global.ArcBehaviors.PayloadParserBehavior = {
-    properties: {
-      // Regexp to search for the `&` character
-      AMP_RE: {
-        type: RegExp,
-        readOnly: true,
-        value: function() {
-          return new RegExp(/&/g);
+  global.ArcBehaviors = {};
+}
+/**
+ * A behavior to be implemented to elements that needs to parse
+ * request / response body.
+ * It contains functions to encode / decode form data and to escape HTML.
+ *
+ * @polymer
+ * @mixinFunction
+ * @memberof ArcBehaviors
+ */
+ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
+  /**
+   * @polymer
+   * @mixinClass
+   */
+  class PPBmixin extends base {
+    static get properties() {
+      return {
+        // Regexp to search for the `&` character
+        AMP_RE: {
+          type: RegExp,
+          readOnly: true,
+          value: function() {
+            return new RegExp(/&/g);
+          }
+        },
+        // Regexp to search for the `>` character
+        GT_RE: {
+          type: RegExp,
+          readOnly: true,
+          value: function() {
+            return new RegExp(/>/g);
+          }
+        },
+        // Regexp to search for the `<` character
+        LT_RE: {
+          type: RegExp,
+          readOnly: true,
+          value: function() {
+            return new RegExp(/</g);
+          }
+        },
+        // Regexp to search for the `'` character
+        SQUOT_RE: {
+          type: RegExp,
+          readOnly: true,
+          value: function() {
+            return new RegExp(/'/g);
+          }
+        },
+        // Regexp to search for the `"` character
+        QUOT_RE: {
+          type: RegExp,
+          readOnly: true,
+          value: function() {
+            return new RegExp(/"/g);
+          }
         }
-      },
-      // Regexp to search for the `>` character
-      GT_RE: {
-        type: RegExp,
-        readOnly: true,
-        value: function() {
-          return new RegExp(/>/g);
-        }
-      },
-      // Regexp to search for the `<` character
-      LT_RE: {
-        type: RegExp,
-        readOnly: true,
-        value: function() {
-          return new RegExp(/</g);
-        }
-      },
-      // Regexp to search for the `'` character
-      SQUOT_RE: {
-        type: RegExp,
-        readOnly: true,
-        value: function() {
-          return new RegExp(/'/g);
-        }
-      },
-      // Regexp to search for the `"` character
-      QUOT_RE: {
-        type: RegExp,
-        readOnly: true,
-        value: function() {
-          return new RegExp(/"/g);
-        }
-      }
-    },
+      };
+    }
+
     /**
      * Escape HTML to save HTML text.
      *
      * @param {String} html A HTML string to be escaped.
      */
-    htmlEscape: function(html) {
+    htmlEscape(html) {
       if (html.indexOf('&') !== -1) {
         html = html.replace(this.AMP_RE, '&amp;');
       }
@@ -89,8 +105,7 @@ the License.
         html = html.replace(this.SQUOT_RE, '&apos;');
       }
       return html;
-    },
-
+    }
     /**
      * Parse input array to string x-www-form-urlencoded.
      *
@@ -102,39 +117,40 @@ the License.
      * object with `name` and `value` keys.
      * @return {String} A parsed string of `name`=`value` pairs of the input objects.
      */
-    formArrayToString: function(arr) {
-      var result = '';
+    formArrayToString(arr) {
       if (!arr) {
-        return result;
+        return [];
       }
-      result = arr.map(function(item) {
-        return this._modelItemToFormDataString(item);
-      }, this)
-      .filter(function(item) {
-        return !!item;
-      })
-      .join('&');
-      return result;
-    },
+      const result = [];
+      arr.forEach((item) => {
+        const data = this._modelItemToFormDataString(item);
+        if (data) {
+          result[result.length] = data;
+        }
+      });
+      return result.join('&');
+    }
     /**
      * Creates a form data string for a single item.
      * @param {Object} model The model with `name` and `value` properties.
      * @return {String} Generated value string for x-www-form-urlencoded form.
      */
-    _modelItemToFormDataString: function(model) {
-      var name = this._paramValue(model.name);
-      var value = model.value;
+    _modelItemToFormDataString(model) {
+      if (model.schema && model.schema.enabled === false) {
+        return;
+      }
+      const name = this._paramValue(model.name);
+      let value = model.value;
       if (value && value instanceof Array) {
-        return value.map(function(item) {
-          return name + '=' + this._paramValue(item);
-        }, this).join('&');
+        return value.map((item) => name + '=' + this._paramValue(item))
+        .join('&');
       }
       value = this._paramValue(value);
       if (!name && !value) {
         return;
       }
       return name + '=' + value;
-    },
+    }
 
     /**
      * Parse input string to array of x-www-form-urlencoded form parameters.
@@ -146,37 +162,35 @@ the License.
      * @param {String} input A string of HTTP x-www-form-urlencoded parameters
      * @return {Array<Object>} An array of params with `name` and `value` keys.
      */
-    stringToArray: function(input) {
-      var result = [];
+    stringToArray(input) {
       if (!input || !input.trim()) {
-        return result;
+        return [];
       }
       //Chrome inspector has FormData output in format: `param-name`:`param-value`
       //When copying from inspector the ':' must be replaced with '='
-      var htmlInputCheck = /^([^\\=]{1,})=(.*)$/m;
+      const htmlInputCheck = /^([^\\=]{1,})=(.*)$/m;
       if (!htmlInputCheck.test(input)) {
         //replace chome inspector data.
         input = input.replace(/^([^\\:]{1,}):(.*)$/gm, '$1=$2&').replace(/\n/gm, '');
         input = input.substr(0, input.length - 1);
       }
 
-      result = this._createParamsArray(input);
-      return result;
-    },
+      return this._createParamsArray(input);
+    }
     /**
      * Converts a string to an array with objects containing name and value keys
      * @param {String} input An input string
      * @return {Array.<Object>} An array of params with `name` and `value` keys.
      */
-    _createParamsArray: function(input) {
-      var result = [];
+    _createParamsArray(input) {
+      let result = [];
       if (!input) {
         return result;
       }
-      var state = 0; // 0 - reading name, 1 - reading value
-      var i = 0;
-      var _tmpName = '';
-      var _tmpValue = '';
+      let state = 0; // 0 - reading name, 1 - reading value
+      let i = 0;
+      let _tmpName = '';
+      let _tmpValue = '';
       while (true) {
         var ch = input[i++];
         if (ch === undefined) {
@@ -205,7 +219,7 @@ the License.
         }
       }
       return result;
-    },
+    }
     /**
      * Appends form data parameter to an array.
      * If the parameter already exists in the array it creates an array for
@@ -216,8 +230,8 @@ the License.
      * @param {String} value Value of the form data parameter
      * @return {Array} Updated array
      */
-    _appendArrayResult: function(array, name, value) {
-      for (var i = 0, len = array.length; i < len; i++) {
+    _appendArrayResult(array, name, value) {
+      for (let i = 0, len = array.length; i < len; i++) {
         if (array[i].name === name) {
           if (array[i].value instanceof Array) {
             array[i].value.push(value);
@@ -232,30 +246,29 @@ the License.
         value: value
       });
       return array;
-    },
-
+    }
     /**
      * Encode payload to x-www-form-urlencoded string.
      *
      * @param {Array<object>|String} input An input data.
      */
-    encodeUrlEncoded: function(input) {
+    encodeUrlEncoded(input) {
       if (!input || !input.length) {
         return input;
       }
-      var isArray = input instanceof Array;
+      const isArray = input instanceof Array;
       if (!isArray) {
         input = this.stringToArray(input);
       }
-      input.forEach(function(obj) {
+      input.forEach((obj) => {
         obj.name = this.encodeQueryString(obj.name);
         obj.value = this._encodeValue(obj.value);
-      }, this);
+      });
       if (isArray) {
         return input;
       }
       return this.formArrayToString(input);
-    },
+    }
     /**
      * URL encodes a value.
      *
@@ -263,37 +276,37 @@ the License.
      * array of strings.
      * @return {String|Array<String>} Encoded value. The same type as the input.
      */
-    _encodeValue: function(value) {
+    _encodeValue(value) {
       if (value instanceof Array) {
-        for (var i = 0, len = value.length; i < len; i++) {
+        for (let i = 0, len = value.length; i < len; i++) {
           value[i] = this.encodeQueryString(value[i]);
         }
         return value;
       }
       return this.encodeQueryString(value);
-    },
+    }
     /**
      * Decode x-www-form-urlencoded data.
      *
      * @param {Array<object>|String} input An input data.
      */
-    decodeUrlEncoded: function(input) {
+    decodeUrlEncoded(input) {
       if (!input || !input.length) {
         return input;
       }
-      var isArray = input instanceof Array;
+      const isArray = input instanceof Array;
       if (!isArray) {
         input = this.stringToArray(input);
       }
-      input.forEach(function(obj) {
+      input.forEach((obj) => {
         obj.name = this.decodeQueryString(obj.name);
         obj.value = this._decodeValue(obj.value);
-      }, this);
+      });
       if (isArray) {
         return input;
       }
       return this.formArrayToString(input);
-    },
+    }
     /**
      * URL decodes a value.
      *
@@ -301,29 +314,28 @@ the License.
      * array of strings.
      * @return {String|Array<String>} Decoded value. The same type as the input.
      */
-    _decodeValue: function(value) {
+    _decodeValue(value) {
       if (value instanceof Array) {
-        for (var i = 0, len = value.length; i < len; i++) {
+        for (let i = 0, len = value.length; i < len; i++) {
           value[i] = this.decodeQueryString(value[i]);
         }
         return value;
       }
       return this.decodeQueryString(value);
-    },
-
+    }
     /**
      * Parse input string as a payload param key or value.
      *
      * @param {String} input An input to parse.
      */
-    _paramValue: function(input) {
+    _paramValue(input) {
       if (!input) {
         return String();
       }
       input = String(input);
       input = input.trim();
       return input;
-    },
+    }
     /**
      * Parse a line of key=value http params into an object with `name` and `value` keys.
      *
@@ -331,16 +343,16 @@ the License.
      * @return {Object} A parsed object with `name` and `value` keys.
      * @deprecated It's old parser. Use `_createParamsArray` instead.
      */
-    _paramLineToFormObject: function(input) {
+    _paramLineToFormObject(input) {
       if (!input) {
         return;
       }
-      var _tmp = input.split('=');
-      var name = _tmp[0].trim();
+      const _tmp = input.split('=');
+      const name = _tmp[0].trim();
       if (!name && _tmp.length === 1) {
         return;
       }
-      var value;
+      let value;
       if (_tmp.length === 1) {
         value = '';
       } else {
@@ -350,7 +362,7 @@ the License.
         name: name,
         value: value
       };
-    },
+    }
     /**
      * Returns a string where all characters that are not valid for a URL
      * component have been escaped. The escaping of a character is done by
@@ -375,13 +387,13 @@ the License.
      * @param {String} str A string containing invalid URL characters
      * @return {String} a string with all invalid URL characters escaped
      */
-    encodeQueryString: function(str) {
+    encodeQueryString(str) {
       if (!str) {
         return str;
       }
-      var regexp = /%20/g;
+      const regexp = /%20/g;
       return encodeURIComponent(str).replace(regexp, '+');
-    },
+    }
     /**
      * Returns a string where all URL component escape sequences have been
      * converted back to their original character representations.
@@ -392,13 +404,15 @@ the License.
      * @param {String} str string containing encoded URL component sequences
      * @return {String} string with no encoded URL component encoded sequences
      */
-    decodeQueryString: function(str) {
+    decodeQueryString(str) {
       if (!str) {
         return str;
       }
-      var regexp = /\+/g;
+      const regexp = /\+/g;
       return decodeURIComponent(str.replace(regexp, '%20'));
     }
-  };
+  }
+return PPBmixin;
+});
 })(window);
 </script>
