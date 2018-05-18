@@ -1,11 +1,10 @@
 {
-  "name": "@api-components/payload-parser-behavior",
-  "version": "2.0.0-preview",
+  "name": "@advanced-rest-client/payload-parser-behavior",
+  "version": "2.0.0",
   "license": "Apache-2.0",
   "description": "Headers parser behavior to be impplemented with elements that needs to parse headers data",
   "devDependencies": {
-    "@polymer/gen-typescript-declarations": "^1.1.1",
-    "bower": "^1.8.0"
+    "@polymer/gen-typescript-declarations": "^1.1.1"
   },
   "private": false,
   "main": "payload-parser-behavior.html",
