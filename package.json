@@ -1,6 +1,6 @@
 {
   "name": "@advanced-rest-client/payload-parser-behavior",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "Apache-2.0",
   "description": "Headers parser behavior to be impplemented with elements that needs to parse headers data",
   "devDependencies": {
