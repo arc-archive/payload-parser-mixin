@@ -87,6 +87,7 @@ ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
      * Escape HTML to save HTML text.
      *
      * @param {String} html A HTML string to be escaped.
+     * @return {String}
      */
     htmlEscape(html) {
       if (html.indexOf('&') !== -1) {
@@ -168,11 +169,11 @@ ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
       if (!input || !input.trim()) {
         return [];
       }
-      //Chrome inspector has FormData output in format: `param-name`:`param-value`
-      //When copying from inspector the ':' must be replaced with '='
+      // Chrome inspector has FormData output in format: `param-name`:`param-value`
+      // When copying from inspector the ':' must be replaced with '='
       const htmlInputCheck = /^([^\\=]{1,})=(.*)$/m;
       if (!htmlInputCheck.test(input)) {
-        //replace chome inspector data.
+        // replace chome inspector data.
         input = input.replace(/^([^\\:]{1,}):(.*)$/gm, '$1=$2&').replace(/\n/gm, '');
         input = input.substr(0, input.length - 1);
       }
@@ -194,7 +195,7 @@ ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
       let _tmpName = '';
       let _tmpValue = '';
       while (true) {
-        var ch = input[i++];
+        const ch = input[i++];
         if (ch === undefined) {
           if (_tmpValue || _tmpName) {
             result = this._appendArrayResult(result, _tmpName, _tmpValue);
@@ -253,6 +254,7 @@ ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
      * Encode payload to x-www-form-urlencoded string.
      *
      * @param {Array<object>|String} input An input data.
+     * @return {Array<object>|String}
      */
     encodeUrlEncoded(input) {
       if (!input || !input.length) {
@@ -291,6 +293,7 @@ ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
      * Decode x-www-form-urlencoded data.
      *
      * @param {Array<object>|String} input An input data.
+     * @return {Array<object>|String}
      */
     decodeUrlEncoded(input) {
       if (!input || !input.length) {
@@ -329,6 +332,7 @@ ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
      * Parse input string as a payload param key or value.
      *
      * @param {String} input An input to parse.
+     * @return {String}
      */
     _paramValue(input) {
       if (!input) {
