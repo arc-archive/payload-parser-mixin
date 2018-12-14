@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <link rel="import" href="test-element.html">
+  </head>
+  <body>
+
+    <test-fixture id="Basic">
+      <template>
+        <test-element></test-element>
+      </template>
+    </test-fixture>
+
+    <script>
+    suite('Basic tests', () => {
+      suite('_modelItemToFormDataString()', () => {
+        let element;
+        setup(() => {
+          element = fixture('Basic');
+        });
+
+        test('Returns undefined when no schema', () => {
+          const result = element._modelItemToFormDataString({});
+          assert.isUndefined(result);
+        });
+
+        test('Returns undefined when item is not enabled', () => {
+          const result = element._modelItemToFormDataString({
+            schema: {
+              enabled: false
+            }
+          });
+          assert.isUndefined(result);
+        });
+
+        test('Returns undefined when no name and value', () => {
+          const result = element._modelItemToFormDataString({
+            schema: {},
+            name: '',
+            value: ''
+          });
+          assert.isUndefined(result);
+        });
+
+        test('Returns undefined when no value value and no required', () => {
+          const result = element._modelItemToFormDataString({
+            schema: {},
+            name: 'test',
+            value: '',
+            required: false
+          });
+          assert.isUndefined(result);
+        });
+
+        test('Returns string', () => {
+          const result = element._modelItemToFormDataString({
+            schema: {},
+            name: 'test',
+            value: 'value'
+          });
+          assert.typeOf(result, 'string');
+        });
+
+        test('Value is always a string', () => {
+          const result = element._modelItemToFormDataString({
+            schema: {},
+            name: 'test',
+            value: true
+          });
+          assert.equal(result, 'test=true');
+        });
+
+        test('Processes array values', () => {
+          const result = element._modelItemToFormDataString({
+            schema: {},
+            name: 'test',
+            value: ['a', 'b']
+          });
+          assert.equal(result, 'test=a&test=b');
+        });
+      });
+    });
+    </script>
+
+  </body>
+</html>
