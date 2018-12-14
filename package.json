@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "description": "Headers parser behavior to be impplemented with elements that needs to parse headers data",
   "devDependencies": {
-    "@polymer/gen-typescript-declarations": "^1.1.1"
+    "@polymer/gen-typescript-declarations": "^1.5.1"
   },
   "private": false,
   "main": "payload-parser-behavior.html",
