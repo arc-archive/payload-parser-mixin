@@ -149,9 +149,11 @@ ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
       if (!name && !value) {
         return;
       }
+      if (!value && model.required === false) {
+        return;
+      }
       return name + '=' + value;
     }
-
     /**
      * Parse input string to array of x-www-form-urlencoded form parameters.
      *
