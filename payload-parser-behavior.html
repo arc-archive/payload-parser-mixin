@@ -166,7 +166,7 @@ ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
      * @return {Array<Object>} An array of params with `name` and `value` keys.
      */
     stringToArray(input) {
-      if (!input || !input.trim()) {
+      if (typeof input !== 'string' || !input.trim()) {
         return [];
       }
       // Chrome inspector has FormData output in format: `param-name`:`param-value`

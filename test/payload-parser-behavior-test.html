@@ -83,6 +83,58 @@
           assert.equal(result, 'test=a&test=b');
         });
       });
+
+      suite('stringToArray()', () => {
+        let element;
+        setup(() => {
+          element = fixture('Basic');
+        });
+
+        test('Parses www-urlencoded string to encoded array', () => {
+          const list = [{
+            'name': 'test',
+            'value': 'encoded+value'
+          }, {
+            'name': 'encoded+name',
+            'value': 'encoded+value'
+          }];
+          const str = 'test=encoded+value&encoded+name=encoded+value';
+          const compare = element.stringToArray(str);
+          assert.deepEqual(list, compare);
+        });
+
+        test('Should create array values', () => {
+          const list = [{
+            'name': 'test',
+            'value': ['encoded+value', 'other+value']
+          }, {
+            'name': 'encoded+name',
+            'value': 'encoded+value'
+          }];
+          const str = 'test=encoded+value&encoded+name=encoded+value&test=other+value';
+          const compare = element.stringToArray(str);
+          assert.deepEqual(list, compare);
+        });
+
+        test('Returns empty array when argument is not a string', () => {
+          const arg = new Blob(['test']);
+          const result = element.stringToArray(arg);
+          assert.typeOf(result, 'array');
+          assert.lengthOf(result, 0);
+        });
+
+        test('Returns empty array when empty string', () => {
+          const result = element.stringToArray('');
+          assert.typeOf(result, 'array');
+          assert.lengthOf(result, 0);
+        });
+
+        test('Returns empty array when whitespace only string', () => {
+          const result = element.stringToArray('   ');
+          assert.typeOf(result, 'array');
+          assert.lengthOf(result, 0);
+        });
+      });
     });
     </script>
 
