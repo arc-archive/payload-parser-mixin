@@ -1,3 +1,21 @@
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/advanced-rest-client/payload-parser-behavior/compare/0.1.1...2.0.1) (2018-12-15)
+
+
+### Docs
+
+* Updated documentation ([3a3b470c055e0916c369942dedb3ea25b71db14c](https://github.com/advanced-rest-client/payload-parser-behavior/commit/3a3b470c055e0916c369942dedb3ea25b71db14c))
+
+### Fix
+
+* Not required ane empty items are not included in value computation ([d2cd7518fe78b2bee1da35674ecd8182856e17cf](https://github.com/advanced-rest-client/payload-parser-behavior/commit/d2cd7518fe78b2bee1da35674ecd8182856e17cf))
+
+### Update
+
+* Empty model item now result with empty string ([80ee5abd99ad715c6918e4647409f42ba6453947](https://github.com/advanced-rest-client/payload-parser-behavior/commit/80ee5abd99ad715c6918e4647409f42ba6453947))
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/advanced-rest-client/payload-parser-behavior/compare/0.1.1...2.0.0) (2018-05-18)
 
