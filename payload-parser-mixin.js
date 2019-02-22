@@ -1,4 +1,4 @@
-<!--
+/**
 @license
 Copyright 2018 The Advanced REST client authors <arc@mulesoft.com>
 
@@ -11,18 +11,13 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
--->
-<link rel="import" href="../polymer/lib/utils/mixin.html">
-<script>
-(function(global) {
-'use strict';
-
-if (!global.ArcBehaviors) {
-  /**
-   * @namespace ArcBehaviors
-   */
-  global.ArcBehaviors = {};
-}
+*/
+import {dedupingMixin} from '@polymer/polymer/lib/utils/mixin.js';
+const AMP_RE = new RegExp(/&/g);
+const GT_RE = new RegExp(/>/g);
+const LT_RE = new RegExp(/</g);
+const SQUOT_RE = new RegExp(/'/g);
+const QUOT_RE = new RegExp(/"/g);
 /**
  * A behavior to be implemented to elements that needs to parse
  * request / response body.
@@ -32,57 +27,47 @@ if (!global.ArcBehaviors) {
  * @mixinFunction
  * @memberof ArcBehaviors
  */
-ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
+export const PayloadParserMixin = dedupingMixin((base) => {
   /**
    * @polymer
    * @mixinClass
    */
-  class PPBmixin extends base {
-    static get properties() {
-      return {
-        // Regexp to search for the `&` character
-        AMP_RE: {
-          type: RegExp,
-          readOnly: true,
-          value: function() {
-            return new RegExp(/&/g);
-          }
-        },
-        // Regexp to search for the `>` character
-        GT_RE: {
-          type: RegExp,
-          readOnly: true,
-          value: function() {
-            return new RegExp(/>/g);
-          }
-        },
-        // Regexp to search for the `<` character
-        LT_RE: {
-          type: RegExp,
-          readOnly: true,
-          value: function() {
-            return new RegExp(/</g);
-          }
-        },
-        // Regexp to search for the `'` character
-        SQUOT_RE: {
-          type: RegExp,
-          readOnly: true,
-          value: function() {
-            return new RegExp(/'/g);
-          }
-        },
-        // Regexp to search for the `"` character
-        QUOT_RE: {
-          type: RegExp,
-          readOnly: true,
-          value: function() {
-            return new RegExp(/"/g);
-          }
-        }
-      };
+  class PayloadParserMixin extends base {
+    /**
+     * Regexp to search for the `&` character
+     * @type {RegExp}
+     */
+    static get AMP_RE() {
+      return AMP_RE;
     }
-
+    /**
+     * Regexp to search for the `>` character
+     * @type {RegExp}
+     */
+    static get GT_RE() {
+      return GT_RE;
+    }
+    /**
+     * Regexp to search for the `<` character
+     * @type {RegExp}
+     */
+    static get LT_RE() {
+      return LT_RE;
+    }
+    /**
+     * Regexp to search for the `'` character
+     * @type {RegExp}
+     */
+    static get SQUOT_RE() {
+      return SQUOT_RE;
+    }
+    /**
+     * Regexp to search for the `"` character
+     * @type {RegExp}
+     */
+    static get QUOT_RE() {
+      return QUOT_RE;
+    }
     /**
      * Escape HTML to save HTML text.
      *
@@ -119,7 +104,7 @@ ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
      * @return {String} A parsed string of `name`=`value` pairs of the input objects.
      */
     formArrayToString(arr) {
-      if (!arr) {
+      if (!arr || !(arr instanceof Array)) {
         return [];
       }
       const result = [];
@@ -418,7 +403,5 @@ ArcBehaviors.PayloadParserBehavior = Polymer.dedupingMixin((base) => {
       return decodeURIComponent(str.replace(regexp, '%20'));
     }
   }
-return PPBmixin;
+  return PayloadParserMixin;
 });
-})(window);
-</script>
