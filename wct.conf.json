@@ -4,7 +4,8 @@
     "local": {
       "disabled": true,
       "browsers": [
-        "chrome"
+        "chrome",
+        "firefox"
       ]
     },
     "sauce": {
@@ -48,6 +49,7 @@
       ]
     },
     "@advanced-rest-client/wct-istanbub": {
+      "disabled": true,
       "dir": "./coverage",
       "reporters": [
         "text-summary",

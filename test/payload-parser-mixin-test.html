@@ -4,13 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
     <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
     <script src="../node_modules/mocha/mocha.js"></script>
     <script src="../node_modules/chai/chai.js"></script>
     <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
 
-    <script type="module" src="./test-element.js"></script>
   </head>
   <body>
 
@@ -21,124 +20,123 @@
     </test-fixture>
 
     <script type="module">
-    suite('Basic tests', () => {
-      suite('_modelItemToFormDataString()', () => {
-        let element;
-        setup(() => {
-          element = fixture('Basic');
-        });
-
-        test('Returns undefined when no schema', () => {
-          const result = element._modelItemToFormDataString({});
-          assert.isUndefined(result);
-        });
-
-        test('Returns undefined when item is not enabled', () => {
-          const result = element._modelItemToFormDataString({
-            schema: {
-              enabled: false
-            }
-          });
-          assert.isUndefined(result);
-        });
-
-        test('Returns undefined when no name and value', () => {
-          const result = element._modelItemToFormDataString({
-            schema: {},
-            name: '',
-            value: ''
-          });
-          assert.isUndefined(result);
-        });
-
-        test('Returns undefined when no value value and no required', () => {
-          const result = element._modelItemToFormDataString({
-            schema: {},
-            name: 'test',
-            value: '',
-            required: false
-          });
-          assert.isUndefined(result);
-        });
-
-        test('Returns string', () => {
-          const result = element._modelItemToFormDataString({
-            schema: {},
-            name: 'test',
-            value: 'value'
-          });
-          assert.typeOf(result, 'string');
-        });
-
-        test('Value is always a string', () => {
-          const result = element._modelItemToFormDataString({
-            schema: {},
-            name: 'test',
-            value: true
-          });
-          assert.equal(result, 'test=true');
-        });
-
-        test('Processes array values', () => {
-          const result = element._modelItemToFormDataString({
-            schema: {},
-            name: 'test',
-            value: ['a', 'b']
-          });
-          assert.equal(result, 'test=a&test=b');
-        });
+    import './test-element.js';
+    suite('_modelItemToFormDataString()', () => {
+      let element;
+      setup(() => {
+        element = fixture('Basic');
       });
 
-      suite('stringToArray()', () => {
-        let element;
-        setup(() => {
-          element = fixture('Basic');
-        });
+      test('Returns undefined when no schema', () => {
+        const result = element._modelItemToFormDataString({});
+        assert.isUndefined(result);
+      });
 
-        test('Parses www-urlencoded string to encoded array', () => {
-          const list = [{
-            'name': 'test',
-            'value': 'encoded+value'
-          }, {
-            'name': 'encoded+name',
-            'value': 'encoded+value'
-          }];
-          const str = 'test=encoded+value&encoded+name=encoded+value';
-          const compare = element.stringToArray(str);
-          assert.deepEqual(list, compare);
+      test('Returns undefined when item is not enabled', () => {
+        const result = element._modelItemToFormDataString({
+          schema: {
+            enabled: false
+          }
         });
+        assert.isUndefined(result);
+      });
 
-        test('Should create array values', () => {
-          const list = [{
-            'name': 'test',
-            'value': ['encoded+value', 'other+value']
-          }, {
-            'name': 'encoded+name',
-            'value': 'encoded+value'
-          }];
-          const str = 'test=encoded+value&encoded+name=encoded+value&test=other+value';
-          const compare = element.stringToArray(str);
-          assert.deepEqual(list, compare);
+      test('Returns undefined when no name and value', () => {
+        const result = element._modelItemToFormDataString({
+          schema: {},
+          name: '',
+          value: ''
         });
+        assert.isUndefined(result);
+      });
 
-        test('Returns empty array when argument is not a string', () => {
-          const arg = new Blob(['test']);
-          const result = element.stringToArray(arg);
-          assert.typeOf(result, 'array');
-          assert.lengthOf(result, 0);
+      test('Returns undefined when no value value and no required', () => {
+        const result = element._modelItemToFormDataString({
+          schema: {},
+          name: 'test',
+          value: '',
+          required: false
         });
+        assert.isUndefined(result);
+      });
 
-        test('Returns empty array when empty string', () => {
-          const result = element.stringToArray('');
-          assert.typeOf(result, 'array');
-          assert.lengthOf(result, 0);
+      test('Returns string', () => {
+        const result = element._modelItemToFormDataString({
+          schema: {},
+          name: 'test',
+          value: 'value'
         });
+        assert.typeOf(result, 'string');
+      });
 
-        test('Returns empty array when whitespace only string', () => {
-          const result = element.stringToArray('   ');
-          assert.typeOf(result, 'array');
-          assert.lengthOf(result, 0);
+      test('Value is always a string', () => {
+        const result = element._modelItemToFormDataString({
+          schema: {},
+          name: 'test',
+          value: true
         });
+        assert.equal(result, 'test=true');
+      });
+
+      test('Processes array values', () => {
+        const result = element._modelItemToFormDataString({
+          schema: {},
+          name: 'test',
+          value: ['a', 'b']
+        });
+        assert.equal(result, 'test=a&test=b');
+      });
+    });
+
+    suite('stringToArray()', () => {
+      let element;
+      setup(() => {
+        element = fixture('Basic');
+      });
+
+      test('Parses www-urlencoded string to encoded array', () => {
+        const list = [{
+          'name': 'test',
+          'value': 'encoded+value'
+        }, {
+          'name': 'encoded+name',
+          'value': 'encoded+value'
+        }];
+        const str = 'test=encoded+value&encoded+name=encoded+value';
+        const compare = element.stringToArray(str);
+        assert.deepEqual(list, compare);
+      });
+
+      test('Should create array values', () => {
+        const list = [{
+          'name': 'test',
+          'value': ['encoded+value', 'other+value']
+        }, {
+          'name': 'encoded+name',
+          'value': 'encoded+value'
+        }];
+        const str = 'test=encoded+value&encoded+name=encoded+value&test=other+value';
+        const compare = element.stringToArray(str);
+        assert.deepEqual(list, compare);
+      });
+
+      test('Returns empty array when argument is not a string', () => {
+        const arg = new Blob(['test']);
+        const result = element.stringToArray(arg);
+        assert.typeOf(result, 'array');
+        assert.lengthOf(result, 0);
+      });
+
+      test('Returns empty array when empty string', () => {
+        const result = element.stringToArray('');
+        assert.typeOf(result, 'array');
+        assert.lengthOf(result, 0);
+      });
+
+      test('Returns empty array when whitespace only string', () => {
+        const result = element.stringToArray('   ');
+        assert.typeOf(result, 'array');
+        assert.lengthOf(result, 0);
       });
     });
     </script>

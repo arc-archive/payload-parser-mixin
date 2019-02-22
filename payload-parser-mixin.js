@@ -37,35 +37,35 @@ export const PayloadParserMixin = dedupingMixin((base) => {
      * Regexp to search for the `&` character
      * @type {RegExp}
      */
-    static get AMP_RE() {
+    get AMP_RE() {
       return AMP_RE;
     }
     /**
      * Regexp to search for the `>` character
      * @type {RegExp}
      */
-    static get GT_RE() {
+    get GT_RE() {
       return GT_RE;
     }
     /**
      * Regexp to search for the `<` character
      * @type {RegExp}
      */
-    static get LT_RE() {
+    get LT_RE() {
       return LT_RE;
     }
     /**
      * Regexp to search for the `'` character
      * @type {RegExp}
      */
-    static get SQUOT_RE() {
+    get SQUOT_RE() {
       return SQUOT_RE;
     }
     /**
      * Regexp to search for the `"` character
      * @type {RegExp}
      */
-    static get QUOT_RE() {
+    get QUOT_RE() {
       return QUOT_RE;
     }
     /**
