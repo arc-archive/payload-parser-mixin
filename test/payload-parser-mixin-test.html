@@ -139,6 +139,39 @@
         assert.lengthOf(result, 0);
       });
     });
+
+    suite('_paramLineToFormObject()', () => {
+      let element;
+      setup(() => {
+        element = fixture('Basic');
+      });
+
+      test('Returns undefined when no input', () => {
+        const result = element._paramLineToFormObject();
+        assert.isUndefined(result);
+      });
+
+      test('Returns undefined when no valid input', () => {
+        const result = element._paramLineToFormObject('');
+        assert.isUndefined(result);
+      });
+
+      test('Sets default empty value', () => {
+        const result = element._paramLineToFormObject('test');
+        assert.deepEqual(result, {
+          name: 'test',
+          value: ''
+        });
+      });
+
+      test('Sets name and value', () => {
+        const result = element._paramLineToFormObject('test=test-value');
+        assert.deepEqual(result, {
+          name: 'test',
+          value: 'test-value'
+        });
+      });
+    });
     </script>
 
   </body>
