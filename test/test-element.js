@@ -1,4 +1,4 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
+import {PolymerElement} from '../../../@polymer/polymer/polymer-element.js';
 import {PayloadParserMixin} from '../payload-parser-mixin.js';
 
 class TestElement extends PayloadParserMixin(PolymerElement) {}

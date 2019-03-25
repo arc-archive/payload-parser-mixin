@@ -12,7 +12,7 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {dedupingMixin} from '@polymer/polymer/lib/utils/mixin.js';
+import {dedupingMixin} from '../../@polymer/polymer/lib/utils/mixin.js';
 const AMP_RE = new RegExp(/&/g);
 const GT_RE = new RegExp(/>/g);
 const LT_RE = new RegExp(/</g);
