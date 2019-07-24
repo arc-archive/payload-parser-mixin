@@ -12,7 +12,7 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {dedupingMixin} from '../../@polymer/polymer/lib/utils/mixin.js';
+import { dedupingMixin } from '@polymer/polymer/lib/utils/mixin.js';
 const AMP_RE = new RegExp(/&/g);
 const GT_RE = new RegExp(/>/g);
 const LT_RE = new RegExp(/</g);
@@ -129,7 +129,7 @@ export const PayloadParserMixin = dedupingMixin((base) => {
       let value = model.value;
       if (value && value instanceof Array) {
         return value.map((item) => name + '=' + this._paramValue(item))
-        .join('&');
+            .join('&');
       }
       value = this._paramValue(value);
       if (!name && !value) {
@@ -179,7 +179,8 @@ export const PayloadParserMixin = dedupingMixin((base) => {
       let i = 0;
       let _tmpName = '';
       let _tmpValue = '';
-      while (true) {
+      const cond = true;
+      while (cond) {
         const ch = input[i++];
         if (ch === undefined) {
           if (_tmpValue || _tmpName) {
