@@ -8,10 +8,13 @@
 
 A mixin to be implemented to elements that needs to parse request / response body.
 
+> This component is no longer developed. Please, do not use it.
+
 ## Usage
 
 ### Installation
-```
+
+```sh
 npm install --save @advanced-rest-client/payload-parser-mixin
 ```
 

@@ -1,9 +1,10 @@
 {
   "name": "@advanced-rest-client/payload-parser-mixin",
-  "description": "Payload parser mixin to be impplemented with elements that needs to parse payload data",
-  "version": "3.0.0",
+  "description": "Payload parser mixin to be implemented with elements that needs to parse payload data",
+  "version": "3.0.1",
   "license": "Apache-2.0",
   "main": "payload-parser-mixin.js",
+  "module": "payload-parser-mixin.js",
   "keywords": [
     "web-components",
     "payload",
@@ -12,12 +13,10 @@
     "arc-components"
   ],
   "authors": [
-    "Pawel Psztyc",
-    "The Advanced REST client authors <arc@mulesoft.com>"
+    "Pawel Psztyc"
   ],
   "contributors": [
-    "Pawel Psztyc",
-    "The Advanced REST client authors <arc@mulesoft.com>"
+    "Your name can be here!"
   ],
   "repository": {
     "type": "git",
@@ -28,41 +27,66 @@
     "email": "arc@mulesoft.com"
   },
   "dependencies": {
-    "@polymer/polymer": "^3.0.0"
+    "@polymer/polymer": "^3.4.1"
   },
   "devDependencies": {
-    "@advanced-rest-client/eslint-config": "^1.0.6",
-    "@advanced-rest-client/testing-karma-sl": "^1.0.2",
-    "@commitlint/cli": "^8.1.0",
-    "@commitlint/config-conventional": "^7.0.0",
-    "@open-wc/prettier-config": "^0.1.0",
-    "@open-wc/testing": "^0.11.1",
-    "@open-wc/testing-karma": "^2.0.6",
-    "@polymer/gen-typescript-declarations": "^1.6.2",
-    "es-dev-server": "^1.5.0",
-    "husky": "^1.0.0",
-    "lint-staged": "^8.0.0",
-    "lit-html": "^1.1.1",
-    "webpack-merge": "^4.1.5"
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/config-conventional": "^12.1.1",
+    "@open-wc/eslint-config": "^4.2.0",
+    "@open-wc/testing": "^2.5.32",
+    "@web/dev-server": "^0.1.17",
+    "@web/test-runner": "0.13.4",
+    "@web/test-runner-playwright": "^0.8.5",
+    "eslint": "^7.26.0",
+    "eslint-config-prettier": "^8.3.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "sinon": "^10.0.0",
+    "typescript": "^4.2.4",
+    "typescript-lit-html-plugin": "^0.9.0"
   },
   "scripts": {
-    "test": "karma start --coverage",
-    "update-types": "gen-typescript-declarations --deleteExisting --outDir .",
-    "lint:eslint": "eslint --ext .js,.html .",
-    "format:eslint": "eslint --ext .js,.html . --fix",
-    "lint:prettier": "prettier \"**/*.js\" --list-different || (echo '↑↑ these files are not prettier formatted ↑↑' && exit 1)",
-    "format:prettier": "prettier \"**/*.js\" --write",
-    "lint": "npm run lint:eslint && npm run lint:prettier",
-    "format": "npm run format:eslint && npm run format:prettier",
-    "test:watch": "karma start --auto-watch=true --single-run=false",
-    "test:legacy": "karma start --legacy --coverage",
-    "test:legacy:watch": "karma start --legacy --auto-watch=true --single-run=false",
-    "test:sl": "karma start karma.sl.config.js --legacy --coverage"
+    "start": "web-dev-server --app-index demo/index.html --node-resolve --open --watch --root-dir .",
+    "lint:eslint": "eslint --ext .js,.html . --ignore-path .gitignore",
+    "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",
+    "lint:types": "tsc",
+    "lint": "npm run lint:eslint",
+    "format": "npm run format:eslint",
+    "test": "web-test-runner test/**/*.test.js --coverage --node-resolve --playwright --browsers chromium firefox",
+    "test:watch": "web-test-runner test/**/*.test.js --node-resolve --watch --playwright --browsers chromium",
+    "gen:wc": "wca analyze \"*.js\" --outFile custom-elements.json"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@open-wc/eslint-config",
+      "eslint-config-prettier"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "demo/**/*.js",
+          "test/**/*.js",
+          "**/demo/**/*.html"
+        ],
+        "rules": {
+          "no-console": "off",
+          "no-unused-expressions": "off",
+          "no-plusplus": "off",
+          "no-param-reassing": "off",
+          "class-methods-use-this": "off",
+          "import/no-extraneous-dependencies": "off"
+        }
+      }
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.js": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ]
   }
 }
